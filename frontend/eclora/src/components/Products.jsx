@@ -4,14 +4,14 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
 import { FaShoppingCart } from "react-icons/fa";
-import { useAuth } from "./UserContext"; // Ensure correct import
+import { useAuth } from "./UserContext"; 
 import { useNavigate } from "react-router-dom";
 import { useCart } from '../context/CartContext';
 
 const Products = ({ category }) => {
   const [products, setProducts] = useState([]);
-  const [cart, setCart] = useState([]); // ✅ Added cart state
-  const { isLoggedIn, fetchUser, loading: authLoading } = useAuth(); // Get logged-in user's details
+  const [cart, setCart] = useState([]); 
+  const { isLoggedIn, fetchUser, loading: authLoading } = useAuth(); 
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -50,7 +50,6 @@ const Products = ({ category }) => {
       setLoading(true);
       setError(null);
       
-      // First check if we're authenticated
       if (!isLoggedIn) {
         const authSuccess = await fetchUser();
         if (!authSuccess) {
@@ -68,12 +67,12 @@ const Products = ({ category }) => {
 
       if (response.status === 401) {
         // Token expired or invalid
-        const authSuccess = await fetchUser(); // Try to refresh user data
+        const authSuccess = await fetchUser();
         if (!authSuccess) {
           navigate("/login");
           return;
         }
-        // Retry the request
+      
         const retryResponse = await fetch("http://192.168.29.216:5000/cart/add", {
           method: "POST",
           credentials: "include",
@@ -84,7 +83,7 @@ const Products = ({ category }) => {
         if (retryResponse.ok) {
           const data = await retryResponse.json();
           alert("Item added to cart successfully");
-          setCart((prevCart) => [...prevCart, item]); // ✅ Update local cart state
+          setCart((prevCart) => [...prevCart, item]); 
         } else {
           const data = await retryResponse.json();
           setError(data.error || "Error adding item to cart");
@@ -93,7 +92,7 @@ const Products = ({ category }) => {
       } else if (response.ok) {
         const data = await response.json();
         alert("Item added to cart successfully");
-        setCart((prevCart) => [...prevCart, item]); // ✅ Update local cart state
+        setCart((prevCart) => [...prevCart, item]); 
       } else {
         const data = await response.json();
         setError(data.error || "Error adding item to cart");
